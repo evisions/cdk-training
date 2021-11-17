@@ -2,7 +2,7 @@
 
 ## What is CloudFormation?
 
-Service that enables you to specify the cloud resources you want, configure them correctly, and now worry about how to provision, migrate, or delete those resources.
+Service that enables you to specify the cloud resources you want, configure them correctly, and not worry about how to provision, migrate, or delete those resources.
 
 ### Step 1: Deploy template to AWS
 
