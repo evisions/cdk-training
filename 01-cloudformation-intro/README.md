@@ -10,7 +10,7 @@ CloudFormation is driven by a template.  The template defines the resources you 
 
 * Navigate to AWS CloudFormation Console (https://console.aws.amazon.com/cloudformation/home)
 * Click "Create stack" and then click "With new resources"
-* Enter name and parameters (will need to lockup some parameters from EC2)
+* Enter name and parameters (will need to lookup some parameters from EC2)
 * Wait for stack to finish creating by following the "Events" tab
 * Inspect the resources that were created
 

@@ -9,7 +9,7 @@ CDK (Cloud Development Kit) is a developer-friendly library toolkit that allows 
 * Run `npm install -g aws-cdk`
 * Create a directory for your project and move your CWD to that directory
 * Run `cdk init app --language typescript`
-* Edit `bin/test.ts` to specify a stack name AND a specific account/region
+* Edit `bin/<filename>.ts` to specify a stack name AND a specific account/region
 * Run `npx cdk synth`
 
 ![CDK Lifecycle](https://docs.aws.amazon.com/cdk/latest/guide/images/Lifecycle.png)
