@@ -1,0 +1,90 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy EC2 resources
+Parameters:
+  Name:
+    Type: String
+  VpcId:
+    Type: String
+  SubnetId:
+    Type: String
+  SsmParameterValueAwsServiceAmi:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: "/aws/service/ami-windows-latest/Windows_Server-2019-English-Full-Base"
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: us-east-1a
+      IamInstanceProfile:
+        Ref: InstanceProfile
+      ImageId:
+        Ref: SsmParameterValueAwsServiceAmi
+      InstanceType: m5.large
+      SecurityGroupIds:
+      - Fn::GetAtt:
+        - InstanceSecurityGroup
+        - GroupId
+      SubnetId:
+        Ref: SubnetId
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: CdkTraining/${Name}
+      UserData:
+        Fn::Base64: "<powershell></powershell>"
+    DependsOn:
+    - InstanceRole
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+      - Ref: InstanceRole
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+        Version: '2012-10-17'
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: CdkTraining/${Name}
+      ManagedPolicyArns:
+        - Fn::Sub: arn:${AWS::Partition}:iam::aws:policy/CloudWatchAgentServerPolicy
+        - Fn::Sub: arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: MapsSaasStack/Instance/InstanceSecurityGroup
+      SecurityGroupEgress:
+      - CidrIp: 0.0.0.0/0
+        Description: Allow all outbound traffic by default
+        IpProtocol: "-1"
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        Description: from 0.0.0.0/0:ICMP Type 8
+        FromPort: 8
+        IpProtocol: icmp
+        ToPort: -1
+      # - CidrIp: 0.0.0.0/0
+      #   Description: from 0.0.0.0/0:3389
+      #   FromPort: 3389
+      #   IpProtocol: tcp
+      #   ToPort: 3389
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: CdkTraining/${Name}
+      VpcId:
+        Ref: VpcId
+
+Outputs:
+  InstanceEndpoint:
+    Value:
+      Fn::GetAtt: Instance.PublicDnsName
